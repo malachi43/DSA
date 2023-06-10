@@ -1,54 +1,32 @@
 
-
-class Student {
-    constructor(firstName, lastName) {
-        this.firstName = firstName
-        this.lastName = lastName
-        this.tardies = 0
-    }
-
-    markLate() {
-        this.tardies++
-        return this.tardies >= 3 ? `You are expelled` : `You were late ${this.tardies} time(s)`
+class Node {
+    constructor(value, priority) {
+        this.value = value
+        this.priority = priority
     }
 }
 
-
-let firstName = new Student('UKO', 'MALACHI')
-// console.log(firstName)
-// console.log(firstName.markLate())
-// console.log(firstName)
-// console.log(firstName.markLate())
-// console.log(firstName)
-// console.log(firstName.markLate())
-// console.log(firstName)
-// console.log(firstName.markLate())
-
-
-
-
-class MaxBinaryHeap {
-
+class PriorityQ {
 
     constructor() {
         this.array = []
     }
 
-    insert(val) {
+    insert(node) {
         let arrLength = this.array.length
         if (arrLength === 0) {
-            this.array.push(val)
+            this.array.push(node)
             return this
         } else {
-            if (val !== this.array[this.array.length - 1]) {
-                this.array.push(val)
+            if (node.priority !== this.array[this.array.length - 1].priority) {
+                this.array.push(node)
                 this.bubbleUp()
             }
         }
         return this
     }
 
-    extractMax() {
+    extractBasedOnPriority() {
 
         if (this.array.length === 1) {
             return this.array.shift()
@@ -56,14 +34,25 @@ class MaxBinaryHeap {
             return this.bubbleDown()
         }
     }
-
+    //[5,16,8]
     bubbleUp() {
         let index = this.array.length - 1
         let parentIndex = Math.floor((index - 1) / 2)
-        while (this.array[index] > this.array[parentIndex]) {
-            this.swap(index, parentIndex)
-            index = this.array.indexOf(this.array[parentIndex])
+
+        while (parentIndex >= 0) {
+            if (this.array[index].priority < this.array[parentIndex].priority) {
+                this.swap(index, parentIndex)
+            }
+            if (
+                (2 * parentIndex + 1) < this.array.length && (2 * parentIndex + 2) < this.array.length &&
+                this.array[2 * parentIndex + 1].priority === this.array[2 * parentIndex + 2].priority
+            ) {
+                console.log(`Equal nodes`)
+                this.array.splice(index, 1)
+            }
+            index = parentIndex
             parentIndex = Math.floor((index - 1) / 2)
+
         }
     }
 
@@ -86,7 +75,7 @@ class MaxBinaryHeap {
             if (leftChildIndex < arrLength) {
 
                 leftChild = this.array[leftChildIndex]
-                if (leftChild > this.array[currentIndex]) {
+                if (leftChild.priority < this.array[currentIndex].priority) {
                     indexToSwapWith = leftChildIndex
                 }
             }
@@ -98,8 +87,8 @@ class MaxBinaryHeap {
 
                 //check if the "rightChild" is greater than the "leftChild".
                 if (
-                    (indexToSwapWith === null && rightChild > this.array[currentIndex]) ||
-                    (indexToSwapWith !== null && rightChild > leftChild)
+                    (indexToSwapWith === null && rightChild.priority < this.array[currentIndex].priority) ||
+                    (indexToSwapWith !== null && rightChild.priority < leftChild.priority)
                 ) {
                     indexToSwapWith = rightChildIndex
                 }
@@ -128,20 +117,22 @@ class MaxBinaryHeap {
         this.array[idx2] = temp
     }
 
+    enqueueBasedOnPriority(val, priority) {
+        const newNode = new Node(val, priority)
+        return this.insert(newNode)
+    }
 
 }
 
 
-
-const heap = new MaxBinaryHeap()
-console.log(`MaxBinaryHeap: `, heap.insert(41))
-console.log(`MaxBinaryHeap: `, heap.insert(39))
-console.log(`MaxBinaryHeap: `, heap.insert(33))
-console.log(`MaxBinaryHeap: `, heap.insert(18))
-console.log(`MaxBinaryHeap: `, heap.insert(27))
-console.log(`MaxBinaryHeap: `, heap.insert(12))
-console.log(`MaxBinaryHeap: `, heap.insert(55))
-console.log(`Extract-Max: `, heap.extractMax())
-console.log(`Extract-Max: `, heap.extractMax())
-console.log(`Extract-Max: `, heap.extractMax())
-console.log(`Extract-Max: `, heap.extractMax())
+const priorityQueue = new PriorityQ()
+console.log(`MaxBinarypriorityQueue: `, priorityQueue.enqueueBasedOnPriority("Malachi", 41))
+console.log(`MaxBinarypriorityQueue: `, priorityQueue.enqueueBasedOnPriority("Mikey", 50))
+console.log(`MaxBinarypriorityQueue: `, priorityQueue.enqueueBasedOnPriority("Jane", 100))
+console.log(`MaxBinarypriorityQueue: `, priorityQueue.enqueueBasedOnPriority("Clark", 0))
+console.log(`MaxBinarypriorityQueue: `, priorityQueue.enqueueBasedOnPriority("Sommy", 1))
+console.log(`ExtractBasedOnPriority: `, priorityQueue.extractBasedOnPriority())
+console.log(`ExtractBasedOnPriority: `, priorityQueue.extractBasedOnPriority())
+console.log(`ExtractBasedOnPriority: `, priorityQueue.extractBasedOnPriority())
+console.log(`ExtractBasedOnPriority: `, priorityQueue.extractBasedOnPriority())
+console.log(`ExtractBasedOnPriority: `, priorityQueue.extractBasedOnPriority())
